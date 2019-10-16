@@ -4,6 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
+    "queue": "nodemon src/queue.js",
     "dev": "nodemon src/server.js"
   },
   "dependencies": {

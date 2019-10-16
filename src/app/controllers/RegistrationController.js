@@ -1,9 +1,10 @@
-import { format, parseISO, startOfDay, isBefore } from 'date-fns';
-import pt from 'date-fns/locale/pt';
+import { parseISO, startOfDay, isBefore } from 'date-fns';
 import Registration from '../models/Registration';
 import Plan from '../models/Plan';
 import Student from '../models/Student';
-import Mail from '../../lib/Mail';
+
+import RegistrationMail from '../jobs/RegistrationMail';
+import Queue from '../../lib/Queue';
 
 class RegistrationController {
   async store(req, res) {
@@ -37,21 +38,10 @@ class RegistrationController {
       start_date,
     });
 
-    await Mail.sendMail({
-      to: `${studentExist.name} <${studentExist.email}>`,
-      subject: 'Bem vindo ao Gym Point',
-      template: 'registration',
-      context: {
-        student: studentExist.name,
-        start_date: format(registration.start_date, 'dd/MM/yyyy', {
-          locale: pt,
-        }),
-        end_date: format(registration.end_date, 'dd/MM/yyyy', {
-          locale: pt,
-        }),
-        price: (planExist.price / 100).toFixed(2),
-        total_price: (registration.price / 100).toFixed(2),
-      },
+    await Queue.add(RegistrationMail.key, {
+      registration,
+      student: studentExist,
+      plan: planExist,
     });
 
     return res.json(registration);
