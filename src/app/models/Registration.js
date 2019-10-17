@@ -1,4 +1,4 @@
-import { Model, Sequelize } from 'sequelize';
+import Sequelize, { Model } from 'sequelize';
 import { addMonths } from 'date-fns';
 import Plan from './Plan';
 

@@ -36,8 +36,6 @@ class CheckinController {
       const { created_at } = lastCheckins[lastCheckins.length - 1];
       const compare_date = startOfDay(created_at);
       const seven_days_ago = subDays(startOfDay(new Date()), 7);
-      console.log(seven_days_ago);
-      console.log(created_at);
       if (isAfter(compare_date, seven_days_ago)) {
         return res.status(401).json({
           error: 'You can only make 5 checkins in a 7 days timespan',
