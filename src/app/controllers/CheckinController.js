@@ -1,11 +1,21 @@
 import { Op } from 'sequelize';
 import { isAfter, subDays, startOfDay } from 'date-fns';
-
+import * as Yup from 'yup';
 import Checkin from '../models/Checkin';
 import Registration from '../models/Registration';
 
 class CheckinController {
   async store(req, res) {
+    const schema = Yup.object().shape({
+      studentId: Yup.number()
+        .integer()
+        .required(),
+    });
+
+    if (!(await schema.isValid(req.body))) {
+      return res.status(401).json({ error: 'Validation Error.' });
+    }
+
     const student_id = req.params.studentId;
 
     const registrationValid = await Registration.findOne({
